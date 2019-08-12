@@ -9,4 +9,14 @@ barcodeManager.addReadListner = function (successCallback, errorCallback) {
     
 };
 
+barcodeManager.pressTrigger = function (successCallback, errorCallback) {
+	exec(successCallback, errorCallback, "BarcodeManager", "pressTrigger", []);
+    
+};
+
+barcodeManager.releaseTrigger = function (successCallback, errorCallback) {
+	exec(successCallback, errorCallback, "BarcodeManager", "releaseTrigger", []);
+    
+};
+
 module.exports = barcodeManager;

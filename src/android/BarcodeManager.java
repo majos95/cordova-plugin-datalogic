@@ -43,6 +43,11 @@ public class BarcodeManager extends CordovaPlugin {
             // }
             return true;
 
+        } else if (action.equals("pressTrigger")) {
+            return pressTrigger(context);
+
+        } else if (action.equals("releaseTrigger")) {
+            return releaseTrigger(context);
         } else {
             
             return false;
@@ -131,7 +136,38 @@ public class BarcodeManager extends CordovaPlugin {
         }
     }
 
+    private boolean pressTrigger(CallbackContext callbackContext){
+        if(decoder != null){
+            try{
+                if (decoder.pressTrigger() == DecodeException.SUCESS) {
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Successfully pressed the trigger");
+                    callbackContext.sendPluginResult(result);
+                    return true;
+                }
+            } catch(DecodeException e) {
+                Log.e(LOGTAG, "Error while pressing the trigger", e);
+            }
+        }
+        PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Error while pressing the trigger " + e.getMessage() );
+        callbackContext.sendPluginResult(result);
+        return false;
+    }
 
-
+    private boolean releaseTrigger(CallbackContext callbackContext){
+        if(decoder != null){
+            try{
+                if (decoder.releaseTrigger() == DecodeException.SUCCESS) {
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Successfully released the trigger");
+                    callbackContext.sendPluginResult(result);
+                    return true;
+                }
+            } catch(DecodeException e) {
+                Log.e(LOGTAG, "Error while releasing the trigger", e);     
+            }
+        }
+        PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Error while releasing the trigger " + e.getMessage() );
+        callbackContext.sendPluginResult(result);
+        return false;
+    }
     
 }
