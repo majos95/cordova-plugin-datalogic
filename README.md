@@ -22,6 +22,12 @@ cordova plugin add @datalogic/cordova-plugin-datalogic
 ionic cordova plugin add @datalogic/cordova-plugin-datalogic
 ```
 
+***or,*** if you are using PhoneGap CLI, this phonegap command:
+
+```bash
+phonegap plugin add @datalogic/cordova-plugin-datalogic
+```
+
 ## Sample apps
 
 Several Ionic sample applications are provided to demonstrate using the plugin. You can find them here: https://github.com/datalogic/ionic-samples
