@@ -26,11 +26,19 @@ ionic cordova plugin add @datalogic/cordova-plugin-datalogic
 
 ```bash
 phonegap plugin add @datalogic/cordova-plugin-datalogic
+
+## Publish new version
+
+Install and use the [np tool](https://github.com/sindresorhus/np):
+
+``` bash
+npm install --global np
+np
 ```
 
 ## Sample apps
 
-Several Ionic sample applications are provided to demonstrate using the plugin. You can find them here: https://github.com/datalogic/ionic-samples
+Several Ionic sample applications are provided to demonstrate using the plugin. You can [find them here](https://github.com/datalogic/ionic-samples).
 
 ## API Reference
 
@@ -57,6 +65,8 @@ All functions are asynchronous. All functions will, at a minimum, include `succe
 | Function | Description
 |----------|------------
 | [addReadListener](#addreadlistenersuccesscallback-errorcallback-object) | Register to recieve barcode data on each scan.
+| [pressTrigger](#presstriggersuccesscallback-errorcallback-object) | Simulate a trigger button press.
+| [releaseTrigger](#releasetriggersuccesscallback-errorcallback-object) | Simulate a trigger button release.
 
 #### .addReadListener(`successCallback`, `errorCallback`): Object
 
@@ -88,6 +98,40 @@ barcodeManager.addReadListner(
 );
 ```
 
+#### .pressTrigger(`successCallback`, `errorCallback`): Object
+
+Call this method to simulate a trigger button press. The method does not always immediately start a capture; instead it behaves like pressing a physical scan button.
+
+##### Response
+
+`string` with success message
+
+##### Example
+
+```js
+barcodeManager.pressTrigger(
+  (data) => { alert(data); },
+  (err) => { alert(err);}
+);
+```
+
+#### .releaseTrigger(`successCallback`, `errorCallback`): Object
+
+Call this method to simulate a release of a trigger button. The method does not always immediately stop a capture; instead it behaves like releasing a physical scan button.
+
+##### Response
+
+`string` with success message
+
+##### Example
+
+```js
+barcodeManager.releaseTrigger(
+  (data) => { alert(data); },
+  (err) => { alert(err);}
+);
+```
+
 ### autoScanTrigger
 
 ---
@@ -98,7 +142,6 @@ barcodeManager.addReadListner(
 | [getSupportedRanges](#getsupportedrangessuccesscallback-errorcallback-object) | Get the supported ranges of the autoscan feature.
 | [getCurrentRange](#getcurrentrangesuccesscallback-errorcallback-object) | Get the current range of the autoscan feature.
 | [setCurrentRange](#setcurrentrangeid-successcallback-errorcallback-object) | Set the current range of the autoscan feature.
-
 
 #### .isAvailable(`successCallback`, `errorCallback`): Object
 
@@ -334,7 +377,7 @@ Set one or more triggers on or off. You will likely call `getAllAvailableTrigger
 
 ```js
 //an array os supported triggers
-triggers:{id: number, name: string, enabled: boolean}[]  = []; 
+triggers:{id: number, name: string, enabled: boolean}[]  = [];
 ...
 keyboardManager.getAllAvailableTriggers(
   (data) => {
@@ -366,7 +409,6 @@ Set the various device LEDs. A list of enum values for LEDs can be found [here](
 ##### Response
 
 `string` with success message
-
 
 ##### Example
 
