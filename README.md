@@ -22,6 +22,11 @@ cordova plugin add @datalogic/cordova-plugin-datalogic
 ionic cordova plugin add @datalogic/cordova-plugin-datalogic
 ```
 
+***or,*** if you are using PhoneGap CLI, this phonegap command:
+
+```bash
+phonegap plugin add @datalogic/cordova-plugin-datalogic
+
 ## Publish new version
 
 Install and use the [np tool](https://github.com/sindresorhus/np):
