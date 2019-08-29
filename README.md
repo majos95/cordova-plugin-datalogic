@@ -38,7 +38,10 @@ np
 
 ## Sample apps
 
-Several Ionic sample applications are provided to demonstrate using the plugin. You can [find them here](https://github.com/datalogic/ionic-samples).
+Several sample applications are provided to demonstrate using the plugin:
+
+* [Ionic samples](https://github.com/datalogic/ionic-samples)
+* [Phonegap samples](https://github.com/datalogic/phonegap-samples)
 
 ## API Reference
 
