@@ -5,3 +5,12 @@ Library that exposes the [Datalogic Android (Java) SDK](https://github.com/datal
 ## Documentation
 
 Usage docs, API reference, and sample apps are available on [datalogic.github.io](https://datalogic.github.io/cordova/overview).
+
+## Publish new version
+
+Install and use the [np tool](https://github.com/sindresorhus/np):
+
+``` bash
+npm install --global np
+np
+```
