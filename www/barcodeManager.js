@@ -1,24 +1,22 @@
+
 /*global cordova, module*/
 var exec = require('cordova/exec');
 
 var barcodeManager = function() {};
 
-// FIXED TYPO: addReadListner ➝ addReadListener
-barcodeManager.addReadListener = function (successCallback, errorCallback) {
-    exec(successCallback, errorCallback, "BarcodeManager", "addReadListener", []);
+barcodeManager.addReadListner = function (successCallback, errorCallback) {
+	exec(successCallback, errorCallback, "BarcodeManager", "addReadListner", []);
+    
 };
 
-/*
-barcodeManager.removeReadListener = function (successCallback, errorCallback) {
-    exec(successCallback, errorCallback, "BarcodeManager", "removeReadListener", []);
-}; */ 
-
 barcodeManager.pressTrigger = function (successCallback, errorCallback) {
-    exec(successCallback, errorCallback, "BarcodeManager", "pressTrigger", []);
+	exec(successCallback, errorCallback, "BarcodeManager", "pressTrigger", []);
+    
 };
 
 barcodeManager.releaseTrigger = function (successCallback, errorCallback) {
-    exec(successCallback, errorCallback, "BarcodeManager", "releaseTrigger", []);
+	exec(successCallback, errorCallback, "BarcodeManager", "releaseTrigger", []);
+    
 };
 
 module.exports = barcodeManager;
