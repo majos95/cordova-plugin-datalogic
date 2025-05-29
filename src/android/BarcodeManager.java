@@ -6,7 +6,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.datalogic.decode.PropertyID;
 
-import com.datalogic.decode.BarcodeManager;
 import com.datalogic.decode.DecodeException;
 import com.datalogic.decode.DecodeResult;
 import com.datalogic.decode.ReadListener;
