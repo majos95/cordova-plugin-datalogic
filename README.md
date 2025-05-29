@@ -6,6 +6,8 @@ Library that exposes the [Datalogic Android (Java) SDK](https://github.com/datal
 
 Usage docs, API reference, and sample apps are available on [datalogic.github.io](https://datalogic.github.io/cordova/overview).
 
+- This versions corrects typo on readListener and adds the method to removing the listener itself
+
 ## Publish new version
 
 Install and use the [np tool](https://github.com/sindresorhus/np):
