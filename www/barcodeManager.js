@@ -8,10 +8,10 @@ barcodeManager.addReadListener = function (successCallback, errorCallback) {
     exec(successCallback, errorCallback, "BarcodeManager", "addReadListener", []);
 };
 
-// ADD THIS: removeReadListener binding
+/*
 barcodeManager.removeReadListener = function (successCallback, errorCallback) {
     exec(successCallback, errorCallback, "BarcodeManager", "removeReadListener", []);
-};
+}; */ 
 
 barcodeManager.pressTrigger = function (successCallback, errorCallback) {
     exec(successCallback, errorCallback, "BarcodeManager", "pressTrigger", []);

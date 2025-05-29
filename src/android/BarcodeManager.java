@@ -35,10 +35,10 @@ public class BarcodeManager extends CordovaPlugin {
             callbackContext = context;
             return true;
 
-        } else if (action.equals("removeReadListener")) {
-            return removeReadListener(context);
+        } /*else if (action.equals("removeReadListener")) {
+            return removeReadListener(context); 
 
-        } else if (action.equals("pressTrigger")) {
+        } */ else if (action.equals("pressTrigger")) {
             return pressTrigger(context);
 
         } else if (action.equals("releaseTrigger")) {
@@ -101,7 +101,7 @@ public class BarcodeManager extends CordovaPlugin {
     public void onPause(boolean multiTasking) {
         super.onPause(multiTasking);
         Log.i(LOGTAG, "onPause");
-
+        /* 
         if (decoder != null) {
             try {
                 decoder.removeReadListener(listener);
@@ -109,9 +109,9 @@ public class BarcodeManager extends CordovaPlugin {
             } catch (Exception e) {
                 Log.e(LOGTAG, "Error while trying to remove a listener from BarcodeManager", e);
             }
-        }
+        } */
     }
-
+/* 
     private boolean removeReadListener(CallbackContext callbackContext) {
         try {
             if (decoder != null && listener != null) {
@@ -131,7 +131,7 @@ public class BarcodeManager extends CordovaPlugin {
             return false;
         }
     }
-
+*/
     private boolean pressTrigger(CallbackContext callbackContext){
         if(decoder != null){
             try{
