@@ -67,7 +67,7 @@ public class BarcodeManager extends CordovaPlugin {
         ErrorManager.enableExceptions(true);
 
         if (decoder == null) {
-            decoder = new BarcodeManager();
+             decoder = new com.datalogic.decode.BarcodeManager();
         }
 
         try {
