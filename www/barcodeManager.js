@@ -1,4 +1,3 @@
-/*global cordova, module*/
 var exec = require('cordova/exec');
 
 var barcodeManager = function() {};
@@ -6,7 +5,6 @@ var barcodeManager = function() {};
 barcodeManager.addReadListener = function (successCallback, errorCallback) {
     exec(successCallback, errorCallback, "BarcodeManager", "addReadListener", []);
 };
-
 
 barcodeManager.removeReadListener = function (successCallback, errorCallback) {
     exec(successCallback, errorCallback, "BarcodeManager", "removeReadListener", []);
