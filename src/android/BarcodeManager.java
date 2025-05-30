@@ -4,7 +4,6 @@ import org.apache.cordova.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.datalogic.decode.DecodeException;
 import com.datalogic.decode.DecodeResult;
 import com.datalogic.decode.ReadListener;
@@ -16,11 +15,10 @@ import android.os.Bundle;
 public class BarcodeManager extends CordovaPlugin {
 
     private final String LOGTAG = getClass().getName();
-    private com.datalogic.decode.BarcodeManager decoder = null;
-    private ReadListener listener = null;
-    private CallbackContext callbackContext = null;
-    private boolean listenerAdded = false;
-
+    com.datalogic.decode.BarcodeManager decoder = null;
+    ReadListener listener = null;
+    CallbackContext callbackContext = null;
+    boolean multiTasking = true;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView){
@@ -30,23 +28,28 @@ public class BarcodeManager extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext context) throws JSONException {
 
-        switch (action) {
-            case "addReadListener":
-                return addReadListener(context);
-            case "removeReadListener":
-                return removeReadListener(context);
-            case "pressTrigger":
-                return pressTrigger(context);
-            case "releaseTrigger":
-                return releaseTrigger(context);
-            default:
-                return false;
+        if (action.equals("addReadListener")) {
+            // You may want to set callbackContext here if needed, or keep empty as original.
+            callbackContext = context;
+            return true;
+
+        } else if (action.equals("removeReadListener")) {
+            return removeReadListener(context);
+
+        } else if (action.equals("pressTrigger")) {
+            return pressTrigger(context);
+
+        } else if (action.equals("releaseTrigger")) {
+            return releaseTrigger(context);
         }
+
+        return false;
     }
 
     @Override
     public Bundle onSaveInstanceState(){
-        return new Bundle();
+        Bundle state = new Bundle();
+        return state;
     }
 
     @Override
@@ -64,6 +67,32 @@ public class BarcodeManager extends CordovaPlugin {
         if (decoder == null) {
             decoder = new com.datalogic.decode.BarcodeManager();
         }
+
+        try {
+            listener = new ReadListener() {
+                @Override
+                public void onRead(DecodeResult decodeResult) {
+                    try {
+                        JSONObject barcodeObject = new JSONObject();
+                        barcodeObject.put("barcodeData", decodeResult.getText());
+                        barcodeObject.put("barcodeType", decodeResult.getBarcodeID().name());
+
+                        if (callbackContext != null) {
+                            PluginResult result = new PluginResult(PluginResult.Status.OK, barcodeObject.toString());
+                            result.setKeepCallback(true);
+                            callbackContext.sendPluginResult(result);
+                        }
+                    } catch (Exception e) {
+                        Log.e(LOGTAG, "Error while trying to read barcode data", e);
+                    }
+                }
+            };
+
+            decoder.addReadListener(listener);
+
+        } catch (DecodeException e) {
+            Log.e(LOGTAG, "Error while trying to bind a listener to BarcodeManager", e);
+        }
     }
 
     @Override
@@ -71,115 +100,71 @@ public class BarcodeManager extends CordovaPlugin {
         super.onPause(multiTasking);
         Log.i(LOGTAG, "onPause");
 
-        // Cleanup happens on explicit removeReadListener call
-        // Do NOT remove listener automatically here, to support multiple pages
-    }
-
-    private boolean addReadListener(CallbackContext context) {
-        this.callbackContext = context;
-
-        if (!listenerAdded) {
+        if (decoder != null) {
             try {
-                if (decoder == null) {
-                    decoder = new com.datalogic.decode.BarcodeManager();
-                }
-
-                listener = new ReadListener() {
-                    @Override
-                    public void onRead(DecodeResult decodeResult) {
-                        try {
-                            JSONObject barcodeObject = new JSONObject();
-                            barcodeObject.put("barcodeData", decodeResult.getText());
-                            barcodeObject.put("barcodeType", decodeResult.getBarcodeID().name());
-
-                            if (callbackContext != null) {
-                                PluginResult result = new PluginResult(PluginResult.Status.OK, barcodeObject.toString());
-                                result.setKeepCallback(true);
-                                callbackContext.sendPluginResult(result);
-                            }
-                        } catch (Exception e) {
-                            Log.e(LOGTAG, "Error while reading barcode", e);
-                        }
-                    }
-                };
-
-                decoder.addReadListener(listener);
-                listenerAdded = true;
-
-                PluginResult result = new PluginResult(PluginResult.Status.OK, "Read listener added");
-                result.setKeepCallback(true);
-                context.sendPluginResult(result);
-            } catch (DecodeException e) {
-                Log.e(LOGTAG, "Error adding listener", e);
-                PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Failed to add read listener");
-                context.sendPluginResult(result);
-                return false;
+                decoder.removeReadListener(listener);
+                decoder = null;
+            } catch (Exception e) {
+                Log.e(LOGTAG, "Error while trying to remove a listener from BarcodeManager", e);
             }
-        } else {
-            PluginResult result = new PluginResult(PluginResult.Status.OK, "Read listener already active");
-            result.setKeepCallback(true);
-            context.sendPluginResult(result);
         }
-
-        return true;
     }
 
     private boolean removeReadListener(CallbackContext context) {
-        if (decoder != null && listenerAdded && listener != null) {
+        if (decoder != null && listener != null) {
             try {
                 decoder.removeReadListener(listener);
                 listener = null;
-                listenerAdded = false;
+                callbackContext = null;
 
                 PluginResult result = new PluginResult(PluginResult.Status.OK, "Read listener removed");
                 context.sendPluginResult(result);
                 return true;
+
             } catch (Exception e) {
-                Log.e(LOGTAG, "Error removing listener", e);
+                Log.e(LOGTAG, "Error removing read listener", e);
                 PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Failed to remove read listener");
                 context.sendPluginResult(result);
                 return false;
             }
         } else {
-            PluginResult result = new PluginResult(PluginResult.Status.ERROR, "No active listener to remove");
+            PluginResult result = new PluginResult(PluginResult.Status.ERROR, "No active read listener to remove");
             context.sendPluginResult(result);
             return false;
         }
     }
 
-    private boolean pressTrigger(CallbackContext context){
-        if (decoder != null) {
-            try {
+    private boolean pressTrigger(CallbackContext callbackContext){
+        if(decoder != null){
+            try{
                 if (decoder.pressTrigger() == DecodeException.SUCCESS) {
-                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Trigger pressed");
-                    context.sendPluginResult(result);
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Successfully pressed the trigger");
+                    callbackContext.sendPluginResult(result);
                     return true;
                 }
-            } catch (DecodeException e) {
-                Log.e(LOGTAG, "Error pressing trigger", e);
+            } catch(DecodeException e) {
+                Log.e(LOGTAG, "Error while pressing the trigger", e);
             }
         }
-
-        PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Error pressing trigger");
-        context.sendPluginResult(result);
+        PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Error while pressing the trigger");
+        callbackContext.sendPluginResult(result);
         return false;
     }
 
-    private boolean releaseTrigger(CallbackContext context){
-        if (decoder != null) {
-            try {
+    private boolean releaseTrigger(CallbackContext callbackContext){
+        if(decoder != null){
+            try{
                 if (decoder.releaseTrigger() == DecodeException.SUCCESS) {
-                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Trigger released");
-                    context.sendPluginResult(result);
+                    PluginResult result = new PluginResult(PluginResult.Status.OK, "Successfully released the trigger");
+                    callbackContext.sendPluginResult(result);
                     return true;
                 }
-            } catch (DecodeException e) {
-                Log.e(LOGTAG, "Error releasing trigger", e);
+            } catch(DecodeException e) {
+                Log.e(LOGTAG, "Error while releasing the trigger", e);     
             }
         }
-
-        PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Error releasing trigger");
-        context.sendPluginResult(result);
+        PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Error while releasing the trigger");
+        callbackContext.sendPluginResult(result);
         return false;
     }
 }
