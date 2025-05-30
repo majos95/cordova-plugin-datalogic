@@ -31,11 +31,11 @@ public class BarcodeManager extends CordovaPlugin {
     @Override
     public boolean execute(String action, JSONArray data, CallbackContext context) throws JSONException {
 
-        if (action.equals("addReadListner")) {
+        if (action.equals("addReadListener")) {
             callbackContext = context;
             return true;
 
-        } else if (action.equals("removeReadListner")) {
+        } else if (action.equals("removeReadListener")) {
             return removeListener(context);
 
         } else if (action.equals("pressTrigger")) {
